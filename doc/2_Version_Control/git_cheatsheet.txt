@@ -6,7 +6,14 @@ git checkout -b- creates and switche to the new branch
 git pull- pulls from remote branch
 git pull orgin <branchName>- pulls from a specific remote branch
 git push- uploads local commits to remote repo
+git push -u <remote> <branchName>- tells github to make a newbranch on the remote
 git push orgin <branchName>- uploads to a specific branch on repo
 git merge- combines other branch into current branch
 git rebase- move or reapplies commits on top of another branch
 git fetch- downloads commits from remote repo into local repo without intergrating them
+git add- stages changes so they are included in the next commit
+git add .- adds all changes
+git add <file>-adds only from the file name
+git status- current state of working directory (unstaged, staged)
+git log- shows commit history
+

@@ -1,0 +1,12 @@
+git commit- saves staged changes in local repo history
+git commit -m""- adds commit message
+git branch- lists branches, git branch <name>- creates a new branch
+git checkout- switches to that branch
+git checkout -b- creates and switche to the new branch
+git pull- pulls from remote branch
+git pull orgin <branchName>- pulls from a specific remote branch
+git push- uploads local commits to remote repo
+git push orgin <branchName>- uploads to a specific branch on repo
+git merge- combines other branch into current branch
+git rebase- move or reapplies commits on top of another branch
+git fetch- downloads commits from remote repo into local repo without intergrating them

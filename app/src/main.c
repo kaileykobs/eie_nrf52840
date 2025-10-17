@@ -7,7 +7,10 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
 #include <inttypes.h>
+#include "BTN.h"
+#include "LED.h"
 
+#define SLEEP_MS 1
 #define SLEEP_TIME_MS 1000
 
 #define SW0_NODE DT_ALIAS(sw0)
@@ -20,6 +23,14 @@ void button_isr(const struct device *dev, struct gpio_callback *cb, uint32_t pin
 }
 
 int main(void) {
+
+  if (0 > BTN_init()) {
+    return 0;
+  }
+  if (0 > LED_init()) {
+    return 0;
+  }
+
   int ret;
 
   if(!gpio_is_ready_dt(&button)) {
@@ -40,10 +51,15 @@ int main(void) {
   gpio_add_callback(button.port, &button_isr_data);
 
   while(1) {
+    if (BTN_check_clear_pressed(BTN0)) {
+      LED_toggle(LED0);
+      printk("Button 0 pressed!\n");
+    }
     ret = gpio_pin_get_dt(&button);
     if (0 < ret) {
       printk("Pressed!\n");
     }
+    k_msleep(SLEEP_MS);
     k_msleep(SLEEP_TIME_MS);
   }
 	return 0;

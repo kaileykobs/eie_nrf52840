@@ -11,23 +11,15 @@
 #include "LED.h"
 
 
-// #define SLEEP_MS 1
-// #define SLEEP_TIME_MS 1000
+
 #define PASSWORD_LENGTH 3
-// #define SW0_NODE DT_ALIAS(sw0)
-// static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(SW0_NODE, gpios);
 
-// static struct gpio_callback button_isr_data;
-
-// void button_isr(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
-//   printk("Button 0 pressed!\n");
-// }
 const int password[PASSWORD_LENGTH] = {BTN0, BTN1, BTN2};
 int input[PASSWORD_LENGTH];
 int input_index = 0;
 
 bool locked = true;
-
+bool entry_mode = false;
 
 int main(void) {
   int ret;
@@ -44,7 +36,46 @@ int main(void) {
     return 0;
   }
 
+  //LED_ON for 3seconds
   LED_set(LED0, LED_ON);
+  int elapsed = 0;
+  while (elapsed < 3000) {
+    if (BTN_check_clear_pressed(BTN3)) {
+      entry_mode = !entry_mode;
+      printk("Entry mode %s\n", entry_mode ? "ON" : "OFF");
+    }
+    k_msleep(50);
+    elapsed += 50;
+  }
+  LED_set(LED3, LED_OFF);
+
+  while(entry_mode) {
+    int user_password[PASSWORD_LENGTH];
+    if (BTN_check_clear_pressed(BTN0) && input_index < PASSWORD_LENGTH) {
+      int user_password[PASSWORD_LENGTH];
+      printk("BTN0 pressed, stored at the index %d\n", input_index - 1);
+    }
+    if (BTN_check_clear_pressed(BTN1) && input_index < PASSWORD_LENGTH) {
+      user_password[input_index++] = BTN1;
+      printk("BTN1 pressed, stored at the index %d\n", input_index - 1);
+    }
+        if (BTN_check_clear_pressed(BTN2) && input_index < PASSWORD_LENGTH) {
+      user_password[input_index++] = BTN2;
+      printk("BTN2 pressed, stored at the index %d\n", input_index - 1);
+    }
+//password entry with BTN3
+    if (BTN_check_clear_pressed(BTN3)) {
+      entry_mode = false;
+      for (int i = 0; i < PASSWORD_LENGTH; ++i) {
+        password[i] = user_password[i];
+      }
+      printk("password saved!!\n");
+      input_index = 0;
+      locked = true;
+    }
+    k_msleep(50);
+
+  }
   // uint8_t counter = 0;
 
   // int ret;
@@ -65,7 +96,7 @@ int main(void) {
 
   // gpio_init_callback(&button_isr_data, button_isr, BIT(button.pin));
   // gpio_add_callback(button.port, &button_isr_data);
-
+  LED_set(LED0, LED_ON);
   while(1) {
     if (locked) {
       if (BTN_check_clear_pressed(BTN0) && input_index < PASSWORD_LENGTH) {

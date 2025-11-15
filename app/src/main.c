@@ -157,24 +157,12 @@ int main(void) {
                 standby_printed = true;
             }
 
-
-            // Any button exits standby
-            if (btn0 || btn1 || btn2 || btn3) {
-                printk("Exiting Standby, returning to previous state\n");
-
-                LED_pwm(LED0, 0);
-                LED_pwm(LED1, 0);
-                LED_pwm(LED2, 0);
-                LED_pwm(LED3, 0);
-                current_state = saved_state_before_standby;
-                standby_printed = false;
                 k_msleep(200);
             }
         }
 
         k_msleep(SLEEP_MS);
     }
-}
 
 
 
